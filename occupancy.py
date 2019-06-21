@@ -44,8 +44,11 @@ async def on_message(message):
     if message.author == client.user:
         return
 
+main_task = None
+
 @client.event
 async def on_ready():
+    global main_task
     Log("Logged in as")
     Log(client.user.name)
     Log(client.user.id)
@@ -61,7 +64,10 @@ async def on_ready():
 
     #Log("Sending first message, with room in state: %s" % openp)
 
-    asyncio.ensure_future(fireMessage())
+    if not main_task == None: 
+        Log("Killing old loop...")
+        main_task.cancel()
+    main_task = asyncio.ensure_future(fireMessage())
 
 
 if __name__ == "__main__":
